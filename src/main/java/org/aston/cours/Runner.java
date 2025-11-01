@@ -3,8 +3,8 @@ package org.aston.cours;
 import org.aston.cours.controller.UserConsoleController;
 import org.aston.cours.dao.UserDao;
 import org.aston.cours.dao.imp.UserDaoImpl;
-import org.aston.cours.model.User;
-import org.aston.cours.service.UserService;
+import org.aston.cours.model.UserEntity;
+import org.aston.cours.service.imp.UserServiceImpl;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
@@ -19,12 +19,12 @@ public class Runner {
                 .build();
         SessionFactory sessionFactory =
                 new MetadataSources(registry)
-                        .addAnnotatedClass(User.class)
+                        .addAnnotatedClass(UserEntity.class)
                         .buildMetadata()
                         .buildSessionFactory();
 
         UserDao userDao = new UserDaoImpl(sessionFactory);
-        UserService service = new UserService(userDao);
+        UserServiceImpl service = new UserServiceImpl(userDao);
         UserConsoleController logic = new UserConsoleController(service);
         logic.start();
     }

@@ -9,23 +9,17 @@ import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 /**
  * Сущность пользователя для хранения в базе данных.
  */
 @Entity
-@Table(name = "user_data.users")
+@Table(name = "users", schema = "user_data")
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
-@ToString
-public class User {
+@Data
+public class UserEntity {
 
     /**
      * Уникальный идентификатор пользователя.
@@ -56,6 +50,7 @@ public class User {
      * Дата и время создания записи пользователя.
      */
     @Column(name = "created_at")
+    @EqualsAndHashCode.Exclude
     private LocalDateTime createdAt;
 
     /**
@@ -66,7 +61,7 @@ public class User {
      * @param age       возраст пользователя
      * @param createdAt дата и время создания пользователя
      */
-    public User(String name, String email, Integer age, LocalDateTime createdAt) {
+    public UserEntity(String name, String email, Integer age, LocalDateTime createdAt) {
         this.name = name;
         this.email = email;
         this.age = age;

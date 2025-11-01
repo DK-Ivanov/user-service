@@ -1,12 +1,12 @@
 package org.aston.cours.dao;
 
-import org.aston.cours.model.User;
+import org.aston.cours.model.UserEntity;
 
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Интерфейс доступа к данным (DAO) для работы с сущностью User.
+ * Интерфейс доступа к данным (DAO) для работы с сущностью UserEntity.
  * <p>
  * Определяет базовые операции CRUD (создание, чтение, обновление, удаление)
  * и методы поиска пользователей по различным критериям.
@@ -16,23 +16,23 @@ public interface UserDao {
     /**
      * Сохраняет нового пользователя в источнике данных.
      *
-     * @param user объект User, который нужно сохранить
+     * @param userEntity объект UserEntity, который нужно сохранить
      */
-    void save(User user);
+    void save(UserEntity userEntity);
 
     /**
      * Обновляет существующего пользователя в источнике данных.
      *
-     * @param user объект User с обновлёнными данными
+     * @param userEntity объект UserEntity с обновлёнными данными
      */
-    void update(User user);
+    void update(UserEntity userEntity);
 
     /**
      * Удаляет пользователя из источника данных.
      *
-     * @param user объект User, который необходимо удалить
+     * @param userEntity объект UserEntity, который необходимо удалить
      */
-    void delete(User user);
+    void delete(UserEntity userEntity);
 
     /**
      * Находит пользователя по его уникальному идентификатору.
@@ -40,7 +40,7 @@ public interface UserDao {
      * @param id идентификатор пользователя
      * @return Optional, содержащий найденного пользователя, или пустой, если пользователь не найден
      */
-    Optional<User> findById(int id);
+    Optional<UserEntity> findById(int id);
 
     /**
      * Находит всех пользователей с указанным именем.
@@ -48,7 +48,7 @@ public interface UserDao {
      * @param name имя пользователя
      * @return список пользователей с совпадающим именем; пустой список, если никого не найдено
      */
-    List<User> findByName(String name);
+    List<UserEntity> findByName(String name);
 
     /**
      * Находит пользователя по адресу электронной почты.
@@ -56,7 +56,7 @@ public interface UserDao {
      * @param email адрес электронной почты
      * @return Optional, содержащий найденного пользователя, или пустой, если пользователь не найден
      */
-    Optional<User> findByEmail(String email);
+    Optional<UserEntity> findByEmail(String email);
 
     /**
      * Находит всех пользователей указанного возраста.
@@ -64,12 +64,12 @@ public interface UserDao {
      * @param age возраст пользователя
      * @return список пользователей данного возраста; пустой список, если никого не найдено
      */
-    List<User> findByAge(int age);
+    List<UserEntity> findByAge(int age);
 
     /**
      * Возвращает всех пользователей, хранящихся в источнике данных.
      *
      * @return список всех пользователей
      */
-    List<User> getAll();
+    List<UserEntity> getAll();
 }
