@@ -7,7 +7,7 @@ import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aston.cours.dao.UserDao;
-import org.aston.cours.model.User;
+import org.aston.cours.model.UserEntity;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
@@ -21,57 +21,57 @@ public class UserDaoImpl implements UserDao {
     private final SessionFactory sessionFactory;
 
     @Override
-    public void save(User user) {
+    public void save(UserEntity userEntity) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            session.persist(user);
+            session.persist(userEntity);
             session.getTransaction().commit();
         }
     }
 
     @Override
-    public void update(User user) {
+    public void update(UserEntity userEntity) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            session.merge(user);
+            session.merge(userEntity);
             session.getTransaction().commit();
         }
     }
 
     @Override
-    public void delete(User user) {
+    public void delete(UserEntity userEntity) {
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            session.remove(user);
+            session.remove(userEntity);
             session.getTransaction().commit();
         }
     }
 
     @Override
-    public Optional<User> findById(int id) {
+    public Optional<UserEntity> findById(int id) {
         return Optional.of(findByQuery("id", id).get(0));
     }
 
     @Override
-    public List<User> findByName(String name) {
+    public List<UserEntity> findByName(String name) {
         return findByQuery("name", name);
     }
 
     @Override
-    public Optional<User> findByEmail(String email) {
+    public Optional<UserEntity> findByEmail(String email) {
         return Optional.of(findByQuery("email", email).get(0));
     }
 
     @Override
-    public List<User> findByAge(int age) {
+    public List<UserEntity> findByAge(int age) {
         return findByQuery("age", age);
     }
 
-    private <I> List<User> findByQuery(String fieldName, I value) {
+    private <I> List<UserEntity> findByQuery(String fieldName, I value) {
         try (Session session = sessionFactory.openSession()) {
             CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-            CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
-            Root<User> root = query.from(User.class);
+            CriteriaQuery<UserEntity> query = criteriaBuilder.createQuery(UserEntity.class);
+            Root<UserEntity> root = query.from(UserEntity.class);
             query.select(root)
                     .where(criteriaBuilder.equal(root.get(fieldName), value));
 
@@ -84,10 +84,10 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<User> getAll() {
+    public List<UserEntity> getAll() {
         try (Session session = sessionFactory.openSession()) {
 
-            return session.createQuery("FROM User", User.class)
+            return session.createQuery("FROM UserEntity", UserEntity.class)
                     .getResultList();
 
         } catch (IllegalArgumentException | PersistenceException e) {

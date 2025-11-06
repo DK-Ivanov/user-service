@@ -2,7 +2,7 @@ package org.aston.cours.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.aston.cours.model.User;
+import org.aston.cours.model.UserEntity;
 import org.aston.cours.service.UserService;
 
 import java.time.LocalDateTime;
@@ -12,7 +12,7 @@ import java.util.function.Function;
 /**
  * Контроллер консольного интерфейса приложения для управления пользователями.
  * Отвечает за взаимодействие с пользователем через консоль:
- * вывод меню, получение ввода, валидацию и вызовы соответствующих методов UserService.
+ * вывод меню, получение ввода, валидацию и вызовы соответствующих методов UserServiceImpl.
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -22,7 +22,7 @@ public class UserConsoleController {
     private final Scanner scanner = new Scanner(System.in);
 
     /** Сервис для выполнения бизнес-операций над пользователями. */
-    private final UserService userService;
+    private final UserService userServiceImpl;
 
     /**
      * Точка входа в консольное приложение.
@@ -58,7 +58,7 @@ public class UserConsoleController {
             case 1 -> create();
             case 2 -> update();
             case 3 -> delete();
-            case 4 -> showAll(userService.getAll());
+            case 4 -> showAll(userServiceImpl.getAll());
             case 5 -> findById();
             case 6 -> findByName();
             case 7 -> findByEmail();
@@ -76,7 +76,7 @@ public class UserConsoleController {
     private void create() {
         String[] userInfo = readUserInfo();
         int age = parseIntFromConsole(userInfo[2].trim());
-        userService.create(new User(userInfo[0].trim(), userInfo[1].trim(), age, LocalDateTime.now()));
+        userServiceImpl.create(new UserEntity(userInfo[0].trim(), userInfo[1].trim(), age, LocalDateTime.now()));
         System.out.println("Пользователь успешно создан!");
     }
 
@@ -87,7 +87,7 @@ public class UserConsoleController {
         int id = chooseUserById();
         String[] userInfo = readUserInfo();
         int age = parseIntFromConsole(userInfo[2].trim());
-        userService.update(new User(id, userInfo[0].trim(), userInfo[1].trim(), age, userService.findById(id).getCreatedAt()));
+        userServiceImpl.update(new UserEntity(id, userInfo[0].trim(), userInfo[1].trim(), age, userServiceImpl.findById(id).getCreatedAt()));
         System.out.println("Пользователь успешно обновлён!");
     }
 
@@ -107,7 +107,7 @@ public class UserConsoleController {
      */
     private void delete() {
         int id = chooseUserById();
-        userService.delete(id);
+        userServiceImpl.delete(id);
         System.out.println("Пользователь успешно удалён!");
     }
 
@@ -120,10 +120,10 @@ public class UserConsoleController {
      */
     private int chooseUserById() {
         System.out.println("Выберите пользователя и введите его id!");
-        List<User> users = userService.getAll();
-        showAll(users);
-        List<Integer> ids = users.stream()
-                .map(User::getId)
+        List<UserEntity> userEntities = userServiceImpl.getAll();
+        showAll(userEntities);
+        List<Integer> ids = userEntities.stream()
+                .map(UserEntity::getId)
                 .toList();
         int id = cleanNextInt();
         if (!ids.contains(id)) {
@@ -139,7 +139,7 @@ public class UserConsoleController {
     private void findById() {
         findBy(
                 "id",
-                id -> List.of(userService.findById(parseIntFromConsole(id.trim())))
+                id -> List.of(userServiceImpl.findById(parseIntFromConsole(id.trim())))
         );
     }
 
@@ -147,14 +147,14 @@ public class UserConsoleController {
      * Ищет пользователей по имени и выводит результат на экран.
      */
     private void findByName() {
-        findBy("имя", userService::findByName);
+        findBy("имя", userServiceImpl::findByName);
     }
 
     /**
      * Ищет пользователя по адресу электронной почты и выводит результат на экран.
      */
     private void findByEmail() {
-        findBy("email", email -> List.of(userService.findByEmail(email)));
+        findBy("email", email -> List.of(userServiceImpl.findByEmail(email)));
     }
 
     /**
@@ -163,7 +163,7 @@ public class UserConsoleController {
     private void findByAge() {
         findBy(
                 "возраст",
-                age -> userService.findByAge(parseIntFromConsole(age.trim()))
+                age -> userServiceImpl.findByAge(parseIntFromConsole(age.trim()))
         );
     }
 
@@ -188,7 +188,7 @@ public class UserConsoleController {
      * @param parameterName   имя параметра (для отображения пользователю)
      * @param reposOperation  функция, выполняющая поиск по введённому значению
      */
-    private void findBy(String parameterName, Function<String, List<User>> reposOperation) {
+    private void findBy(String parameterName, Function<String, List<UserEntity>> reposOperation) {
         System.out.printf("Введите %s пользователя\n", parameterName);
         String parameter = scanner.nextLine();
         showAll(reposOperation.apply(parameter));
@@ -197,10 +197,10 @@ public class UserConsoleController {
     /**
      * Выводит список пользователей в консоль в читаемом виде.
      *
-     * @param users список пользователей для отображения
+     * @param userEntities список пользователей для отображения
      */
-    private void showAll(List<User> users) {
-        users.stream()
+    private void showAll(List<UserEntity> userEntities) {
+        userEntities.stream()
                 .map(user -> String.format(
                         "id: %s, name: %s, email: %s, age: %s, created at: %s",
                         user.getId(),
