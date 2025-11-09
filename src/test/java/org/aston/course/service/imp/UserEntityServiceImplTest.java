@@ -1,7 +1,7 @@
 package org.aston.course.service.imp;
 
-import org.aston.cours.dao.UserDao;
-import org.aston.cours.model.UserEntity;
+import org.aston.cours.entity.UserEntity;
+import org.aston.cours.repository.UserRepository;
 import org.aston.cours.service.imp.UserServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 public class UserEntityServiceImplTest {
 
     @Mock
-    private UserDao userDao;
+    private UserRepository userRepository;
 
     @InjectMocks
     private UserServiceImpl userService;
@@ -40,39 +40,48 @@ public class UserEntityServiceImplTest {
             LocalDateTime.now()
     );
 
-
-
     @Test
-    @DisplayName("Сохраняет пользователя в бд через UserDAO")
+    @DisplayName("Сохраняет пользователя в бд через UserRepository")
     public void testUserCreateSucces() {
-        userService.create(userEntity);
+        userService.save(userEntity);
 
-        verify(userDao).save(userCaptor.capture());
+        verify(userRepository).save(userCaptor.capture());
         assertEquals(userEntity.getId(), userCaptor.getValue().getId());
     }
 
     @Test
-    @DisplayName("Обновляет пользователя в бд через UserDAO")
+    @DisplayName("Обновляет пользователя в бд через UserRepository")
     public void testUpdateSucces() {
         userService.update(userEntity);
 
-        verify(userDao).update(userCaptor.capture());
+        verify(userRepository).save(userCaptor.capture());
         assertEquals(userEntity.getId(), userCaptor.getValue().getId());
     }
 
     @Test
-    @DisplayName("Удаляет пользователя из бд через UserDAO")
-    public void testDeleteSucces() {
-        when(userDao.findById(1)).thenReturn(Optional.of(userEntity));
+    @DisplayName("Удаляет пользователя по id из бд через UserRepository")
+    public void testDeleteByIdSucces() {
+        when(userRepository.findById(1)).thenReturn(Optional.of(userEntity));
 
         userService.delete(1);
 
-        verify(userDao).delete(userCaptor.capture());
+        verify(userRepository).delete(userCaptor.capture());
         assertEquals(userEntity, userCaptor.getValue());
     }
 
     @Test
-    @DisplayName("Получает всех пользователей из бд через UserDAO")
+    @DisplayName("Удаляет пользователя по email из бд через UserRepository")
+    public void testDeleteByEmailSucces() {
+        userService.delete(userEntity.getEmail());
+
+        ArgumentCaptor<String> emailCaptor = ArgumentCaptor.forClass(String.class);
+
+        verify(userRepository).deleteByEmail(emailCaptor.capture());
+        assertEquals(userEntity.getEmail(), emailCaptor.getValue());
+    }
+
+    @Test
+    @DisplayName("Получает всех пользователей из бд через UserRepository")
     public void testGetAllReturnAllUsersSucces() {
         UserEntity userEntity2 = new UserEntity(
                 2,
@@ -82,18 +91,18 @@ public class UserEntityServiceImplTest {
                 LocalDateTime.now()
         );
         List<UserEntity> allUserEntities = List.of(userEntity, userEntity2);
-        when(userDao.getAll()).thenReturn(allUserEntities);
+        when(userRepository.findAll()).thenReturn(allUserEntities);
 
         List<UserEntity> result = userService.getAll();
 
         assertEquals(allUserEntities, result);
-        verify(userDao).getAll();
+        verify(userRepository).findAll();
     }
 
     @Test
-    @DisplayName("Получает пользователя по id из бд через UserDAO")
+    @DisplayName("Получает пользователя по id из бд через UserRepository")
     public void testFindByIdSucces() {
-        when(userDao.findById(1)).thenReturn(Optional.of(userEntity));
+        when(userRepository.findById(1)).thenReturn(Optional.of(userEntity));
 
         UserEntity result = userService.findById(1);
 
@@ -101,37 +110,35 @@ public class UserEntityServiceImplTest {
     }
 
     @Test
-    @DisplayName("Получает пользователя по имени из бд через UserDAO")
+    @DisplayName("Получает пользователя по имени из бд через UserRepository")
     public void testFindByNameSucces() {
-        when(userDao.findByName("Dima")).thenReturn(List.of(userEntity));
+        when(userRepository.findByName("Dima")).thenReturn(List.of(userEntity));
 
         List<UserEntity> result = userService.findByName("Dima");
 
         assertEquals(result, List.of(userEntity));
-        verify(userDao).findByName("Dima");
+        verify(userRepository).findByName("Dima");
     }
 
     @Test
-    @DisplayName("Получает пользователя по возрасту из бд через UserDAO")
+    @DisplayName("Получает пользователя по возрасту из бд через UserRepository")
     public void testFindByAgeSucces() {
-        when(userDao.findByAge(12)).thenReturn(List.of(userEntity));
+        when(userRepository.findByAge(12)).thenReturn(List.of(userEntity));
 
         List<UserEntity> result = userService.findByAge(12);
 
         assertEquals(List.of(userEntity), result);
-        verify(userDao).findByAge(12);
+        verify(userRepository).findByAge(12);
     }
 
     @Test
-    @DisplayName("Получает пользователя по email из бд через UserDAO")
+    @DisplayName("Получает пользователя по email из бд через UserRepository")
     public void testFindByEmailSucces() {
-        when(userDao.findByEmail("qwerty123@ya.ru")).thenReturn(Optional.of(userEntity));
+        when(userRepository.findByEmail("qwerty123@ya.ru")).thenReturn(Optional.of(userEntity));
 
         UserEntity result = userService.findByEmail("qwerty123@ya.ru");
 
         assertEquals(userEntity, result);
-        verify(userDao).findByEmail("qwerty123@ya.ru");
+        verify(userRepository).findByEmail("qwerty123@ya.ru");
     }
-
-
 }
