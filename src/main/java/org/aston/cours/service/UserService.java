@@ -1,17 +1,26 @@
 package org.aston.cours.service;
 
-import org.aston.cours.model.UserEntity;
+import org.aston.cours.entity.UserEntity;
 
 import java.util.List;
 
 public interface UserService {
 
-    public void create(UserEntity userEntity);
-    public void update(UserEntity userEntity);
-    public void delete(int id);
-    public List<UserEntity> getAll();
-    public UserEntity findById(int id);
-    public List<UserEntity> findByName(String name);
-    public UserEntity findByEmail(String email);
-    public List<UserEntity> findByAge(int age);
+    void save(UserEntity user);
+
+    void update(UserEntity user);
+
+    void delete(int id);
+
+    void delete(String email);
+
+    List<UserEntity> getAll();
+
+    UserEntity findById(int id);
+
+    List<UserEntity> findByName(String name);
+
+    UserEntity findByEmail(String email);
+
+    List<UserEntity> findByAge(int age);
 }

@@ -1,9 +1,11 @@
 package org.aston.cours.service.imp;
 
-import lombok.RequiredArgsConstructor;
-import org.aston.cours.dao.UserDao;
-import org.aston.cours.model.UserEntity;
+import org.aston.cours.entity.UserEntity;
+import org.aston.cours.exception.UserNotFoundException;
+import org.aston.cours.repository.UserRepository;
 import org.aston.cours.service.UserService;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -12,27 +14,33 @@ import java.util.List;
  * Сервисный класс, отвечающий за логику работы с пользователями.
  * Делегирует операции объекту UserDao, который осуществляет доступ к данным.
  */
-@RequiredArgsConstructor
+@Service
 public class UserServiceImpl implements UserService {
 
-    private final UserDao userDao;
+    private final UserRepository userRepository;
+
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     /**
      * Создает нового пользователя в системе.
      *
-     * @param userEntity объект, содержащий данные нового пользователя.
+     * @param user объект, содержащий данные нового пользователя.
      */
-    public void create(UserEntity userEntity) {
-        userDao.save(userEntity);
+    @Transactional
+    public void save(UserEntity user) {
+        userRepository.save(user);
     }
 
     /**
      * Обновляет информацию о существующем пользователе.
      *
-     * @param userEntity объект с обновлёнными данными.
+     * @param user объект с обновлёнными данными.
      */
-    public void update(UserEntity userEntity) {
-        userDao.update(userEntity);
+    @Transactional
+    public void update(UserEntity user) {
+        userRepository.save(user);
     }
 
     /**
@@ -40,9 +48,20 @@ public class UserServiceImpl implements UserService {
      *
      * @param id уникальный идентификатор пользователя.
      */
+    @Transactional
     public void delete(int id) {
-        UserEntity userEntityForDelete = userDao.findById(id).orElseThrow();
-        userDao.delete(userEntityForDelete);
+        UserEntity userEntityForDelete = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        userRepository.delete(userEntityForDelete);
+    }
+
+    /**
+     * Удаляет пользователя по его email.
+     *
+     * @param email адрес электронной почты пользователя.
+     */
+    @Transactional
+    public void delete(String email) {
+        userRepository.deleteByEmail(email);
     }
 
     /**
@@ -51,7 +70,7 @@ public class UserServiceImpl implements UserService {
      * @return список объектов.
      */
     public List<UserEntity> getAll() {
-        return userDao.getAll();
+        return userRepository.findAll();
     }
 
     /**
@@ -61,7 +80,7 @@ public class UserServiceImpl implements UserService {
      * @return объект.
      */
     public UserEntity findById(int id) {
-        return userDao.findById(id).orElseThrow();
+        return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
     /**
@@ -71,7 +90,7 @@ public class UserServiceImpl implements UserService {
      * @return список пользователей с совпадающим именем.
      */
     public List<UserEntity> findByName(String name) {
-        return userDao.findByName(name);
+        return userRepository.findByName(name);
     }
 
     /**
@@ -81,7 +100,7 @@ public class UserServiceImpl implements UserService {
      * @return объект, если найден, иначе {@code null}
      */
     public UserEntity findByEmail(String email) {
-        return userDao.findByEmail(email).orElseThrow();
+        return userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
     }
 
     /**
@@ -91,6 +110,6 @@ public class UserServiceImpl implements UserService {
      * @return список пользователей с данным возрастом
      */
     public List<UserEntity> findByAge(int age) {
-        return userDao.findByAge(age);
+        return userRepository.findByAge(age);
     }
 }

@@ -1,28 +1,35 @@
 package org.aston.cours.controller;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.aston.cours.model.UserEntity;
+import org.aston.cours.entity.UserEntity;
 import org.aston.cours.service.UserService;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Scanner;
 import java.util.function.Function;
+
 /**
  * Контроллер консольного интерфейса приложения для управления пользователями.
  * Отвечает за взаимодействие с пользователем через консоль:
  * вывод меню, получение ввода, валидацию и вызовы соответствующих методов UserServiceImpl.
  */
-@Slf4j
-@RequiredArgsConstructor
+@Component
 public class UserConsoleController {
 
-    /** Сканер для чтения пользовательского ввода из консоли. */
+    /**
+     * Сканер для чтения пользовательского ввода из консоли.
+     */
     private final Scanner scanner = new Scanner(System.in);
 
-    /** Сервис для выполнения бизнес-операций над пользователями. */
+    /**
+     * Сервис для выполнения бизнес-операций над пользователями.
+     */
     private final UserService userServiceImpl;
+
+    public UserConsoleController(UserService userServiceImpl) {
+        this.userServiceImpl = userServiceImpl;
+    }
 
     /**
      * Точка входа в консольное приложение.
@@ -76,7 +83,7 @@ public class UserConsoleController {
     private void create() {
         String[] userInfo = readUserInfo();
         int age = parseIntFromConsole(userInfo[2].trim());
-        userServiceImpl.create(new UserEntity(userInfo[0].trim(), userInfo[1].trim(), age, LocalDateTime.now()));
+        userServiceImpl.save(new UserEntity(userInfo[0].trim(), userInfo[1].trim(), age, LocalDateTime.now()));
         System.out.println("Пользователь успешно создан!");
     }
 
@@ -185,8 +192,8 @@ public class UserConsoleController {
     /**
      * Универсальный метод поиска пользователей по заданному параметру.
      *
-     * @param parameterName   имя параметра (для отображения пользователю)
-     * @param reposOperation  функция, выполняющая поиск по введённому значению
+     * @param parameterName  имя параметра (для отображения пользователю)
+     * @param reposOperation функция, выполняющая поиск по введённому значению
      */
     private void findBy(String parameterName, Function<String, List<UserEntity>> reposOperation) {
         System.out.printf("Введите %s пользователя\n", parameterName);
