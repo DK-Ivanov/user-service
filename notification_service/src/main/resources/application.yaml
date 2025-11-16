@@ -1,0 +1,18 @@
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: secrete@gmail.com
+    password: secrete_pass
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  kafka:
+    bootstrap-servers: host.docker.internal:9092
+    topic:
+      user: user
