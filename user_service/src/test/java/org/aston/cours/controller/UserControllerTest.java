@@ -1,0 +1,145 @@
+package org.aston.cours.controller;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.aston.cours.dto.UserDto;
+import org.aston.cours.exception.ApplicationControllerExceptionHandler;
+import org.aston.cours.exception.UserNotFoundException;
+import org.aston.cours.service.EntityService;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import java.util.List;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+
+
+@WebMvcTest(UserController.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@ContextConfiguration(classes = org.aston.cours.Runner.class)
+@Import(ApplicationControllerExceptionHandler.class)
+public class UserControllerTest {
+
+    @MockBean
+    private EntityService entityService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    private MockMvc userController;
+
+    private UserDto dto = new UserDto();
+
+    @BeforeAll
+    void dtoInit() {
+        dto.setName("Dima");
+        dto.setAge(18);
+        dto.setEmail("qwerty1yaru");
+    }
+
+    @Test
+    @DisplayName("Успешное создание пользователя")
+    void testCreateUserSucces() throws Exception {
+        userController.perform(post("/users/new")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(MockMvcResultMatchers.status().isCreated());
+    }
+
+    @Test
+    @DisplayName("Успешное обновление пользователя")
+    void testUpdateUserSucces() throws Exception {
+        userController.perform(put("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("Успешное удаление пользователя")
+    void testDeleteByEmailSucces() throws Exception {
+        userController.perform(delete("/users/{email}", dto.getEmail()))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+        verify(entityService).delete(dto.getEmail());
+    }
+
+    @Test
+    @DisplayName("Успешное получение всех пользователей")
+    void testGetAllUsersSucces() throws Exception {
+        when(entityService.getAll()).thenReturn(List.of(dto));
+
+        userController.perform(get("/users"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value(dto.getName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].email").value(dto.getEmail()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].age").value(dto.getAge()));
+        verify(entityService).getAll();
+    }
+
+    @Test
+    @DisplayName("Успешное получение пользователей по имени")
+    void testGetUserByNameSucces() throws Exception {
+        when(entityService.findByName(dto.getName())).thenReturn(List.of(dto));
+
+        userController.perform(get("/users/by-name/{name}", dto.getName()))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value(dto.getName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].email").value(dto.getEmail()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].age").value(dto.getAge()));
+        verify(entityService).findByName(dto.getName());
+    }
+
+    @Test
+    @DisplayName("Успешное получение пользователей по email")
+    void testGetUserByEmailSucces() throws Exception {
+        when(entityService.findByEmail(dto.getEmail())).thenReturn(dto);
+
+        userController.perform(get("/users/by-email/{email}", dto.getEmail()))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(dto.getName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value(dto.getEmail()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.age").value(dto.getAge()));
+        verify(entityService).findByEmail(dto.getEmail());
+    }
+
+    @Test
+    @DisplayName("Пользователь с таким email не найден")
+    void testFindByEmailUserNotFound() throws Exception {
+        when(entityService.findByEmail(dto.getEmail()))
+                .thenThrow(new UserNotFoundException());
+
+        userController.perform(get("/users/by-email/{email}", dto.getEmail()))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.header()
+                        .stringValues("Error-Message", "Пользователь не найден!")
+                );
+    }
+
+    @Test
+    @DisplayName("Успешное получение пользователей по возрасту")
+    void testGetUserByAgeSucces() throws Exception {
+        when(entityService.findByAge(dto.getAge())).thenReturn(List.of(dto));
+
+        userController.perform(get("/users/by-age/{age}", dto.getAge()))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value(dto.getName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].email").value(dto.getEmail()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].age").value(dto.getAge()));
+        verify(entityService).findByAge(dto.getAge());
+    }
+}

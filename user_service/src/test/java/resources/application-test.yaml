@@ -1,0 +1,6 @@
+spring:
+  profiles: test
+  kafka:
+    bootstrap-servers: dummy
+    topic:
+      user: user-test

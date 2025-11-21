@@ -1,0 +1,29 @@
+server:
+  port: 8888
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/user_management
+    username: dev
+    password: 123dev123
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        default_schema: user_data
+        format_sql: true
+        use_sql_comments: true
+        jdbc:
+          lob:
+            non_contextual_creation: true
+  kafka:
+    bootstrap-servers: host.docker.internal:9092
+    topic:
+      user: user
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
