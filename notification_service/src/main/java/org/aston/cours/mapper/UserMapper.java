@@ -7,5 +7,5 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-    UserDto convertToUserDto(UserDtoKafka dto);
+    UserDto ofDtoKafka(UserDtoKafka dto);
 }

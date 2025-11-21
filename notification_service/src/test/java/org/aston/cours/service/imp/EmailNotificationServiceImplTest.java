@@ -16,13 +16,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class EmailServiceTest {
+class EmailNotificationServiceImplTest {
 
     @Mock
     private MessageSender messageSender;
 
     @InjectMocks
-    private EmailService emailService;
+    private EmailNotificationServiceImpl emailNotificationServiceImpl;
 
     @Captor
     private ArgumentCaptor<String> emailCapture;
@@ -36,7 +36,7 @@ class EmailServiceTest {
     @Test
     @DisplayName("Успешная отправка уведомления о создании пользователя")
     void sendCreateMessage() {
-        emailService.sendCreateMessage(user);
+        emailNotificationServiceImpl.sendCreateMessage(user);
 
         verify(messageSender).sendMessage(
                 emailCapture.capture(),
@@ -55,7 +55,7 @@ class EmailServiceTest {
     @Test
     @DisplayName("Успешная отправка уведомления об удалении пользователя")
     void sendDeleteMessage() {
-        emailService.sendDeleteMessage(user);
+        emailNotificationServiceImpl.sendDeleteMessage(user);
 
         verify(messageSender).sendMessage(
                 emailCapture.capture(),
@@ -81,7 +81,7 @@ class EmailServiceTest {
                 message
         );
 
-        emailService.sendCustomMessage(messageDto);
+        emailNotificationServiceImpl.sendCustomMessage(messageDto);
 
         verify(messageSender).sendMessage(
                 emailCapture.capture(),

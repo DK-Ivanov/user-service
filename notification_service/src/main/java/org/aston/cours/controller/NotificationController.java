@@ -1,5 +1,7 @@
 package org.aston.cours.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.aston.cours.dto.UserDto;
 import org.aston.cours.dto.UserMessageDto;
 import org.aston.cours.service.NotificationService;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/notifications")
+@Tag(name = "NotificationController", description = "методы для уведомления пользователей")
 public class NotificationController {
 
     private final NotificationService notificationService;
@@ -31,6 +34,7 @@ public class NotificationController {
      * @param userDto DTO с данными пользователя
      * @return HTTP 200 OK при успешной отправке сообщения
      */
+    @Operation(summary = "Уведомить о создании нового пользователя")
     @PostMapping("/user/created")
     public ResponseEntity<Void> sendUserCreated(@RequestBody UserDto userDto) {
         notificationService.sendCreateMessage(userDto);
@@ -45,6 +49,7 @@ public class NotificationController {
      * @param userDto DTO с идентификационными данными пользователя
      * @return HTTP 200 OK при успешной отправке сообщения
      */
+    @Operation(summary = "Уведомить об удалении пользователя")
     @PostMapping("/user/deleted")
     public ResponseEntity<Void> sendUserDeleted(@RequestBody UserDto userDto) {
         notificationService.sendDeleteMessage(userDto);
@@ -59,6 +64,7 @@ public class NotificationController {
      * @param messageDto DTO с текстом произвольного сообщения, темой сообщения и email пользователя
      * @return HTTP 200 OK при успешной отправке сообщения
      */
+    @Operation(summary = "Отправить кастомное уведомление пользователю")
     @PostMapping("/custom")
     public ResponseEntity<Void> sendCustom(@RequestBody UserMessageDto messageDto) {
         notificationService.sendCustomMessage(messageDto);

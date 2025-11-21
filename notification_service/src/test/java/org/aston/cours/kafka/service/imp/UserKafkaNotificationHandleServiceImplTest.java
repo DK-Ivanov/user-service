@@ -20,7 +20,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class UserKafkaNotificationHandleServiceTest {
+class UserKafkaNotificationHandleServiceImplTest {
 
     @Mock
     private NotificationService notificationService;
@@ -28,7 +28,7 @@ class UserKafkaNotificationHandleServiceTest {
     private UserMapper userMapper;
 
     @InjectMocks
-    private UserKafkaNotificationHandleService userService;
+    private UserKafkaNotificationHandleServiceImpl userService;
 
     @Captor
     private ArgumentCaptor<UserDtoKafka> userCapture;
@@ -49,11 +49,11 @@ class UserKafkaNotificationHandleServiceTest {
     @DisplayName("Успешная обработка сообщения о создании пользователя")
     void handleCreateMessageSucces() {
         user.setOperation(UserOperation.CREATE);
-        when(userMapper.convertToUserDto(user)).thenReturn(dto);
+        when(userMapper.ofDtoKafka(user)).thenReturn(dto);
 
         userService.handleMessage(user);
 
-        verify(userMapper).convertToUserDto(userCapture.capture());
+        verify(userMapper).ofDtoKafka(userCapture.capture());
         verify(notificationService).sendCreateMessage(dtoCapture.capture());
         assertEquals(user, userCapture.getValue());
         assertEquals(dto, dtoCapture.getValue());
@@ -63,11 +63,11 @@ class UserKafkaNotificationHandleServiceTest {
     @DisplayName("Успешная обработка сообщения об удалении пользователя")
     void handleDeleteMessageSucces() {
         user.setOperation(UserOperation.DELETE);
-        when(userMapper.convertToUserDto(user)).thenReturn(dto);
+        when(userMapper.ofDtoKafka(user)).thenReturn(dto);
 
         userService.handleMessage(user);
 
-        verify(userMapper).convertToUserDto(userCapture.capture());
+        verify(userMapper).ofDtoKafka(userCapture.capture());
         verify(notificationService).sendDeleteMessage(dtoCapture.capture());
         assertEquals(user, userCapture.getValue());
         assertEquals(dto, dtoCapture.getValue());

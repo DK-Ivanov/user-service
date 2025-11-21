@@ -14,10 +14,10 @@ public interface UserMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
-    UserEntity convertToUser(UserDto dto, boolean setCreatedAt);
+    UserEntity entityOfUserDto(UserDto dto, boolean setCreatedAt);
 
-    UserDto convertToDto(UserEntity user);
+    UserDto dtoOfEntity(UserEntity user);
 
     @Mapping(target = "operation", ignore = true)
-    UserDtoKafka convertToDtoKafka(UserEntity user, UserOperation operation);
+    UserDtoKafka dtoKafkaOfEntity(UserEntity user, UserOperation operation);
 }
