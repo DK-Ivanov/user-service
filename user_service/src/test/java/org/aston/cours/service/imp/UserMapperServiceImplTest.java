@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
-public class UserMapperServiceTest {
+public class UserMapperServiceImplTest {
 
     @Mock
     private UserServiceImpl userService;
@@ -30,7 +30,7 @@ public class UserMapperServiceTest {
     private UserMapper mapper;
 
     @InjectMocks
-    private UserMapperService userMapperService;
+    private UserMapperServiceImpl userMapperServiceImpl;
 
     @Captor
     private ArgumentCaptor<UserEntity> userCaptor;
@@ -57,7 +57,7 @@ public class UserMapperServiceTest {
     public void testSaveSucces() {
         when(mapper.entityOfUserDto(dto, true)).thenReturn(user);
 
-        userMapperService.save(dto);
+        userMapperServiceImpl.save(dto);
 
         verify(userService).save(userCaptor.capture());
         assertEquals(user, userCaptor.getValue());
@@ -68,7 +68,7 @@ public class UserMapperServiceTest {
     public void testUpdateSucces() {
         when(mapper.entityOfUserDto(dto, false)).thenReturn(user);
 
-        userMapperService.update(dto);
+        userMapperServiceImpl.update(dto);
 
         verify(userService).update(userCaptor.capture());
         assertEquals(user, userCaptor.getValue());
@@ -77,7 +77,7 @@ public class UserMapperServiceTest {
     @Test
     @DisplayName("Успешный маппинг пользователя при удалении по ID")
     void testDeleteByIdSucces() {
-        userMapperService.delete(1);
+        userMapperServiceImpl.delete(1);
 
         verify(userService).delete(1);
     }
@@ -85,7 +85,7 @@ public class UserMapperServiceTest {
     @Test
     @DisplayName("Успешный маппинг пользователя при удалении по email")
     void testDeleteByEmailSucces() {
-        userMapperService.delete("qwerty123@ya.ru");
+        userMapperServiceImpl.delete("qwerty123@ya.ru");
 
         verify(userService).delete("qwerty123@ya.ru");
     }
@@ -96,7 +96,7 @@ public class UserMapperServiceTest {
         when(userService.getAll()).thenReturn(List.of(user));
         when(mapper.dtoOfEntity(user)).thenReturn(dto);
 
-        List<UserDto> result = userMapperService.getAll();
+        List<UserDto> result = userMapperServiceImpl.getAll();
 
         assertEquals(1, result.size());
         assertEquals(dto, result.get(0));
@@ -109,7 +109,7 @@ public class UserMapperServiceTest {
         when(userService.findById(1)).thenReturn(user);
         when(mapper.dtoOfEntity(user)).thenReturn(dto);
 
-        UserDto result = userMapperService.findById(1);
+        UserDto result = userMapperServiceImpl.findById(1);
 
         assertEquals(dto, result);
         verify(userService).findById(1);
@@ -121,7 +121,7 @@ public class UserMapperServiceTest {
         when(userService.findByName("Dima")).thenReturn(List.of(user));
         when(mapper.dtoOfEntity(user)).thenReturn(dto);
 
-        List<UserDto> result = userMapperService.findByName("Dima");
+        List<UserDto> result = userMapperServiceImpl.findByName("Dima");
 
         assertEquals(1, result.size());
         assertEquals(dto, result.get(0));
@@ -134,7 +134,7 @@ public class UserMapperServiceTest {
         when(userService.findByEmail("qwerty123@ya.ru")).thenReturn(user);
         when(mapper.dtoOfEntity(user)).thenReturn(dto);
 
-        UserDto result = userMapperService.findByEmail("qwerty123@ya.ru");
+        UserDto result = userMapperServiceImpl.findByEmail("qwerty123@ya.ru");
 
         assertEquals(dto, result);
         verify(userService).findByEmail("qwerty123@ya.ru");
@@ -146,7 +146,7 @@ public class UserMapperServiceTest {
         when(userService.findByAge(12)).thenReturn(List.of(user));
         when(mapper.dtoOfEntity(user)).thenReturn(dto);
 
-        List<UserDto> result = userMapperService.findByAge(12);
+        List<UserDto> result = userMapperServiceImpl.findByAge(12);
 
         assertEquals(1, result.size());
         assertEquals(dto, result.get(0));

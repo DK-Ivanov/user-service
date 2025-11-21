@@ -8,12 +8,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class UserMapperService implements EntityService<UserDto> {
+public class UserMapperServiceImpl implements EntityService<UserDto> {
 
     private final UserMapper userMapper;
     private final UserServiceImpl userService;
 
-    public UserMapperService(UserMapper userMapper, UserServiceImpl userService) {
+    public UserMapperServiceImpl(UserMapper userMapper, UserServiceImpl userService) {
         this.userMapper = userMapper;
         this.userService = userService;
     }
