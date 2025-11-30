@@ -15,12 +15,12 @@ import org.springframework.stereotype.Service;
  * </p>
  */
 @Service
-public class UserKafkaNotificationHandleService implements UserKafkaHandleService {
+public class UserKafkaNotificationHandleServiceImpl implements UserKafkaHandleService {
 
     private final NotificationService notificationService;
     private final UserMapper userMapper;
 
-    public UserKafkaNotificationHandleService(NotificationService notificationService, UserMapper userMapper) {
+    public UserKafkaNotificationHandleServiceImpl(NotificationService notificationService, UserMapper userMapper) {
         this.notificationService = notificationService;
         this.userMapper = userMapper;
     }
@@ -35,8 +35,8 @@ public class UserKafkaNotificationHandleService implements UserKafkaHandleServic
      */
     public void handleMessage(UserDtoKafka dto) {
         switch (dto.getOperation()) {
-            case CREATE -> notificationService.sendCreateMessage(userMapper.convertToUserDto(dto));
-            case DELETE -> notificationService.sendDeleteMessage(userMapper.convertToUserDto(dto));
+            case CREATE -> notificationService.sendCreateMessage(userMapper.ofDtoKafka(dto));
+            case DELETE -> notificationService.sendDeleteMessage(userMapper.ofDtoKafka(dto));
         }
     }
 }

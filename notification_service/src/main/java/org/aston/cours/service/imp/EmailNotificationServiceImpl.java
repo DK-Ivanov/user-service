@@ -17,11 +17,14 @@ import org.springframework.stereotype.Service;
  * </p>
  */
 @Service
-public class EmailService implements NotificationService {
+public class EmailNotificationServiceImpl implements NotificationService {
 
     private final MessageSender messageSender;
 
-    public EmailService(MessageSender messageSender) {
+    private final String CREATE_TEXT = "Здравствуйте %s! Ваш аккаунт на сайте ваш сайт был успешно создан.";
+    private final String DELETE_TEXT = "Здравствуйте %s! Ваш аккаунт был удалён.";
+
+    public EmailNotificationServiceImpl(MessageSender messageSender) {
         this.messageSender = messageSender;
     }
 
@@ -32,9 +35,11 @@ public class EmailService implements NotificationService {
      */
     @Override
     public void sendCreateMessage(UserDto dto) {
-        String text = "Здравствуйте %s! Ваш аккаунт на сайте ваш сайт был успешно создан."
-                .formatted(dto.getName());
-        messageSender.sendMessage(dto.getEmail(), "Создание пользователя", text);
+        messageSender.sendMessage(
+                dto.getEmail(),
+                "Создание пользователя",
+                String.format(CREATE_TEXT, dto.getName())
+        );
     }
 
     /**
@@ -44,8 +49,11 @@ public class EmailService implements NotificationService {
      */
     @Override
     public void sendDeleteMessage(UserDto dto) {
-        String text = "Здравствуйте %s! Ваш аккаунт был удалён.".formatted(dto.getName());
-        messageSender.sendMessage(dto.getEmail(), "Удаление пользователя", text);
+        messageSender.sendMessage(
+                dto.getEmail(),
+                "Удаление пользователя",
+                String.format(DELETE_TEXT, dto.getName())
+        );
     }
 
     /**

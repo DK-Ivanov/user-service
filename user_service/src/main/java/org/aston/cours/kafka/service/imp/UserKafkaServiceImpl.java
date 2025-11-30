@@ -4,7 +4,7 @@ import org.aston.cours.entity.UserEntity;
 import org.aston.cours.kafka.dto.UserOperation;
 import org.aston.cours.kafka.producer.UserKafkaProducer;
 import org.aston.cours.kafka.service.UserKafkaService;
-import org.aston.cours.mapper.UserMapperDecorator;
+import org.aston.cours.mapper.UserMapper;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,15 +12,15 @@ import org.springframework.stereotype.Service;
  * при создании и удалении пользователей.
  * <p>
  * Данный сервис преобразует сущность {@link UserEntity} в DTO, пригодное для передачи через Kafka,
- * с помощью {@link UserMapperDecorator}, и делегирует публикацию сообщений в {@link UserKafkaProducer}.
+ * с помощью {@link UserMapper}, и делегирует публикацию сообщений в {@link UserKafkaProducer}.
  */
 @Service
 public class UserKafkaServiceImpl implements UserKafkaService {
 
     private final UserKafkaProducer userKafkaProducer;
-    private final UserMapperDecorator userMapper;
+    private final UserMapper userMapper;
 
-    public UserKafkaServiceImpl(UserKafkaProducer userKafkaProducer, UserMapperDecorator userMapper) {
+    public UserKafkaServiceImpl(UserKafkaProducer userKafkaProducer, UserMapper userMapper) {
         this.userKafkaProducer = userKafkaProducer;
         this.userMapper = userMapper;
     }
@@ -32,7 +32,7 @@ public class UserKafkaServiceImpl implements UserKafkaService {
      */
     @Override
     public void create(UserEntity user) {
-        userKafkaProducer.sendUserToKafka(userMapper.convertToDtoKafka(user, UserOperation.CREATE));
+        userKafkaProducer.sendUserToKafka(userMapper.dtoKafkaOfEntity(user, UserOperation.CREATE));
     }
 
     /**
@@ -42,6 +42,6 @@ public class UserKafkaServiceImpl implements UserKafkaService {
      */
     @Override
     public void delete(UserEntity user) {
-        userKafkaProducer.sendUserToKafka(userMapper.convertToDtoKafka(user, UserOperation.DELETE));
+        userKafkaProducer.sendUserToKafka(userMapper.dtoKafkaOfEntity(user, UserOperation.DELETE));
     }
 }

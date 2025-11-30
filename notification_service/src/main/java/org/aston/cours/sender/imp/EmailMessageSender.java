@@ -3,7 +3,7 @@ package org.aston.cours.sender.imp;
 import org.aston.cours.sender.MessageSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 /**
  * Реализация интерфейса {@link MessageSender}, использующая {@link JavaMailSender}
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * Этот класс формирует текстовое сообщение и отправляет его через SMTP.
  * </p>
  */
-@Service
+@Component
 public class EmailMessageSender implements MessageSender {
 
     private final JavaMailSender mailSender;

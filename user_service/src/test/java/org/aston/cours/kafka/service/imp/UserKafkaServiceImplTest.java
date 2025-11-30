@@ -4,7 +4,7 @@ import org.aston.cours.entity.UserEntity;
 import org.aston.cours.kafka.dto.UserDtoKafka;
 import org.aston.cours.kafka.dto.UserOperation;
 import org.aston.cours.kafka.producer.UserKafkaProducer;
-import org.aston.cours.mapper.UserMapperDecorator;
+import org.aston.cours.mapper.UserMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,7 @@ class UserKafkaServiceImplTest {
     @Mock
     private UserKafkaProducer userKafkaProducer;
     @Mock
-    private UserMapperDecorator userMapperDecorator;
+    private UserMapper userMapperDecorator;
 
     @InjectMocks
     private UserKafkaServiceImpl userKafkaService;
@@ -57,11 +57,11 @@ class UserKafkaServiceImplTest {
     @DisplayName("Успешное сообщение о создании")
     public void testCreateSucces() {
         userDtoKafka.setOperation(UserOperation.CREATE);
-        when(userMapperDecorator.convertToDtoKafka(user, UserOperation.CREATE)).thenReturn(userDtoKafka);
+        when(userMapperDecorator.dtoKafkaOfEntity(user, UserOperation.CREATE)).thenReturn(userDtoKafka);
 
         userKafkaService.create(user);
 
-        verify(userMapperDecorator).convertToDtoKafka(userCapture.capture(), userOperationCaptor.capture());
+        verify(userMapperDecorator).dtoKafkaOfEntity(userCapture.capture(), userOperationCaptor.capture());
         verify(userKafkaProducer).sendUserToKafka(userDtoKafkaCaptor.capture());
         assertEquals(user, userCapture.getValue());
         assertEquals(UserOperation.CREATE, userOperationCaptor.getValue());
@@ -72,11 +72,11 @@ class UserKafkaServiceImplTest {
     @DisplayName("Успешное уведомление об удалении")
     public void testDeleteSucces() {
         userDtoKafka.setOperation(UserOperation.DELETE);
-        when(userMapperDecorator.convertToDtoKafka(user, UserOperation.DELETE)).thenReturn(userDtoKafka);
+        when(userMapperDecorator.dtoKafkaOfEntity(user, UserOperation.DELETE)).thenReturn(userDtoKafka);
 
         userKafkaService.delete(user);
 
-        verify(userMapperDecorator).convertToDtoKafka(userCapture.capture(), userOperationCaptor.capture());
+        verify(userMapperDecorator).dtoKafkaOfEntity(userCapture.capture(), userOperationCaptor.capture());
         verify(userKafkaProducer).sendUserToKafka(userDtoKafkaCaptor.capture());
         assertEquals(user, userCapture.getValue());
         assertEquals(UserOperation.DELETE, userOperationCaptor.getValue());

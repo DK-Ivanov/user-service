@@ -20,7 +20,6 @@ import java.util.Map;
 @Configuration
 public class KafkaConsumerConfig {
 
-    private static final Logger log = LoggerFactory.getLogger(KafkaConsumerConfig.class);
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServers;
 
@@ -41,8 +40,7 @@ public class KafkaConsumerConfig {
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, UserDtoKafka> kafkaListenerContainerFactory(
-            ConsumerFactory<String, UserDtoKafka> userKafkaConsumerFactory
-    ) {
+            ConsumerFactory<String, UserDtoKafka> userKafkaConsumerFactory) {
         ConcurrentKafkaListenerContainerFactory<String, UserDtoKafka> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(userKafkaConsumerFactory);
