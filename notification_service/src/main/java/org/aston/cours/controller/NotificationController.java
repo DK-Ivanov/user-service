@@ -1,6 +1,11 @@
 package org.aston.cours.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.aston.cours.dto.UserDto;
 import org.aston.cours.dto.UserMessageDto;
@@ -35,8 +40,16 @@ public class NotificationController {
      * @return HTTP 200 OK при успешной отправке сообщения
      */
     @Operation(summary = "Уведомить о создании нового пользователя")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Сообщение успешно отправлено"),
+            @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
+    })
     @PostMapping("/user/created")
-    public ResponseEntity<Void> sendUserCreated(@RequestBody UserDto userDto) {
+    public ResponseEntity<Void> sendUserCreated(
+            @Parameter(description = "DTO с данными пользователя", required = true,
+                    schema = @Schema(implementation = UserDto.class))
+            @RequestBody
+            UserDto userDto) {
         notificationService.sendCreateMessage(userDto);
         return ResponseEntity.ok().build();
     }
@@ -50,8 +63,16 @@ public class NotificationController {
      * @return HTTP 200 OK при успешной отправке сообщения
      */
     @Operation(summary = "Уведомить об удалении пользователя")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Сообщение успешно отправлено"),
+            @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
+    })
     @PostMapping("/user/deleted")
-    public ResponseEntity<Void> sendUserDeleted(@RequestBody UserDto userDto) {
+    public ResponseEntity<Void> sendUserDeleted(
+            @Parameter(description = "DTO с идентификационными данными пользователя", required = true,
+                    schema = @Schema(implementation = UserDto.class))
+            @RequestBody
+            UserDto userDto) {
         notificationService.sendDeleteMessage(userDto);
         return ResponseEntity.ok().build();
     }
@@ -65,8 +86,16 @@ public class NotificationController {
      * @return HTTP 200 OK при успешной отправке сообщения
      */
     @Operation(summary = "Отправить кастомное уведомление пользователю")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Сообщение успешно отправлено"),
+            @ApiResponse(responseCode = "500", description = "Внутренняя ошибка сервера")
+    })
     @PostMapping("/custom")
-    public ResponseEntity<Void> sendCustom(@RequestBody UserMessageDto messageDto) {
+    public ResponseEntity<Void> sendCustom(
+            @Parameter(description = "DTO с текстом произвольного сообщения, темой и email пользователя", required = true,
+                    schema = @Schema(implementation = UserMessageDto.class))
+            @RequestBody
+            UserMessageDto messageDto) {
         notificationService.sendCustomMessage(messageDto);
         return ResponseEntity.ok().build();
     }

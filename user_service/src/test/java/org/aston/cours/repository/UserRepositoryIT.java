@@ -1,5 +1,6 @@
 package org.aston.cours.repository;
 
+import org.aston.cours.UserServiceRunner;
 import org.aston.cours.entity.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DataJpaTest
 @Testcontainers()
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@ContextConfiguration(classes = org.aston.cours.Runner.class)
+@ContextConfiguration(classes = UserServiceRunner.class)
 @Sql(statements = "CREATE SCHEMA IF NOT EXISTS user_data;\n" +
         "\n" +
         "CREATE TABLE IF NOT EXISTS user_data.users (\n" +

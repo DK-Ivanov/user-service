@@ -12,6 +12,9 @@
         <module>user_service</module>
         <module>user_service</module>
         <module>notification_service</module>
+        <module>eureka-server</module>
+        <module>gateway_service</module>
+        <module>config_server</module>
     </modules>
 
     <properties>
@@ -66,6 +69,13 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>1.18.42</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>2023.0.3</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

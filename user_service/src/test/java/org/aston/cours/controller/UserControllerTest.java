@@ -1,6 +1,7 @@
 package org.aston.cours.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.aston.cours.UserServiceRunner;
 import org.aston.cours.dto.UserDto;
 import org.aston.cours.exception.ApplicationControllerExceptionHandler;
 import org.aston.cours.exception.UserNotFoundException;
@@ -38,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(UserController.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@ContextConfiguration(classes = org.aston.cours.Runner.class)
+@ContextConfiguration(classes = UserServiceRunner.class)
 @Import(ApplicationControllerExceptionHandler.class)
 public class UserControllerTest {
 
