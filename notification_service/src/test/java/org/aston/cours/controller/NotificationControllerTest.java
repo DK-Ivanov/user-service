@@ -1,6 +1,7 @@
 package org.aston.cours.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.aston.cours.NotificationServiceRunner;
 import org.aston.cours.dto.UserDto;
 import org.aston.cours.dto.UserMessageDto;
 import org.aston.cours.service.NotificationService;
@@ -19,7 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @WebMvcTest(NotificationController.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@ContextConfiguration(classes = org.aston.cours.Runner.class)
+@ContextConfiguration(classes = NotificationServiceRunner.class)
 class NotificationControllerTest {
 
     @MockBean

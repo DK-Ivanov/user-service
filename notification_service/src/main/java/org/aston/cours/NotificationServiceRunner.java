@@ -7,8 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * Главный класс программы.
  */
 @SpringBootApplication(scanBasePackages = "org/aston/cours")
-public class Runner {
+public class NotificationServiceRunner {
     public static void main(String[] args) {
-        SpringApplication.run(Runner.class, args);
+        SpringApplication.run(NotificationServiceRunner.class, args);
     }
 }

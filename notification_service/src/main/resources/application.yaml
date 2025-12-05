@@ -1,18 +1,17 @@
 spring:
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: secrete@gmail.com
-    password: secrete_pass
-    protocol: smtp
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
+  application:
+    name: notification-service
 
-  kafka:
-    bootstrap-servers: host.docker.internal:9092
-    topic:
-      user: user
+  config:
+    import: "optional:configserver:"
+
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: config-server
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
