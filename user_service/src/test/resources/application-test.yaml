@@ -1,0 +1,26 @@
+spring:
+  config:
+    activate:
+      on-profile: test
+  kafka:
+    bootstrap-servers: dummy
+    topic:
+      user: user-test
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        use_sql_comments: true
+        jdbc:
+          lob:
+            non_contextual_creation: true
+        default_schema: user_data

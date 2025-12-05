@@ -1,6 +1,11 @@
 spring:
-  profiles: test
+  config:
+    activate:
+      on-profile: test
+
   kafka:
     bootstrap-servers: dummy
     topic:
       user: user_test
+  mail:
+    host: none
