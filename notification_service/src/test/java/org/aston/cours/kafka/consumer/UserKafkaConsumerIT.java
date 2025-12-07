@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -29,7 +30,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Testcontainers
 @EnableKafka
-@SpringBootTest(properties = "spring.profiles.active=test", classes = {TestKafkaProducerConfig.class})
+@ActiveProfiles("test")
+@SpringBootTest(
+        properties = {
+                "spring.cloud.config.enabled=false",
+                "spring.cloud.discovery.enabled=false",
+                "eureka.client.enabled=false",
+        }, classes = {TestKafkaProducerConfig.class})
 class UserKafkaConsumerIT {
 
     static KafkaContainer kafka = new KafkaContainer(

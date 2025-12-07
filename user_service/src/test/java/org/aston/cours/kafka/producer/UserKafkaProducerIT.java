@@ -11,8 +11,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.core.ConsumerFactory;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -24,8 +26,16 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@ActiveProfiles("test")
+@SpringBootTest(
+        properties = {
+                "spring.cloud.config.enabled=false",
+                "spring.cloud.discovery.enabled=false",
+                "eureka.client.enabled=false"
+        },
+        classes = {TestKafkaConsumerConfig.class}
+)
 @Testcontainers
-@SpringBootTest(properties = "spring.profiles.active=test", classes = {TestKafkaConsumerConfig.class})
 class UserKafkaProducerIT {
 
     static KafkaContainer kafka = new KafkaContainer(
